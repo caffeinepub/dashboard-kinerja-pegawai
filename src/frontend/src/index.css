@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..700;1,300..700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    /* Background: #F3F5F7 very light blue-gray */
+    --background: 0.967 0.004 235;
+    /* Foreground: #1F2A37 near-black */
+    --foreground: 0.26 0.025 245;
+    /* Card: white */
+    --card: 1 0 0;
+    --card-foreground: 0.26 0.025 245;
+    --popover: 1 0 0;
+    --popover-foreground: 0.26 0.025 245;
+    /* Primary: #1E88E5 medium blue */
+    --primary: 0.61 0.17 248;
+    --primary-foreground: 1 0 0;
+    /* Secondary */
+    --secondary: 0.945 0.012 235;
+    --secondary-foreground: 0.35 0.05 245;
+    /* Muted */
+    --muted: 0.958 0.006 228;
+    --muted-foreground: 0.55 0.01 257;
+    /* Accent */
+    --accent: 0.93 0.02 240;
+    --accent-foreground: 0.61 0.17 248;
+    /* Destructive: #D32F2F red */
+    --destructive: 0.49 0.21 24;
+    --destructive-foreground: 1 0 0;
+    /* Border: #E3E8EE */
+    --border: 0.918 0.012 226;
+    --input: 0.918 0.012 226;
+    --ring: 0.61 0.17 248;
+    /* Success: #2E7D32 */
+    --success: 0.47 0.12 145;
+    --success-foreground: 1 0 0;
+    /* Warning: #F2B233 */
+    --warning: 0.78 0.16 71;
+    --warning-foreground: 0.2 0.02 60;
+    /* Charts */
+    --chart-1: 0.61 0.17 248;
+    --chart-2: 0.47 0.12 145;
+    --chart-3: 0.78 0.16 71;
+    --chart-4: 0.49 0.21 24;
+    --chart-5: 0.65 0.15 275;
+    /* Sidebar: deep navy #0B3F73 */
+    --sidebar: 0.31 0.11 252;
+    --sidebar-foreground: 0.97 0.005 235;
+    --sidebar-primary: 0.75 0.1 240;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.38 0.1 252;
+    --sidebar-accent-foreground: 0.97 0.005 235;
+    --sidebar-border: 0.38 0.1 252;
+    --sidebar-ring: 0.61 0.17 248;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .bg-sidebar-gradient {
+    background: linear-gradient(
+      180deg,
+      oklch(0.31 0.11 252) 0%,
+      oklch(0.42 0.15 252) 100%
+    );
+  }
+  .sidebar-nav-active {
+    background: oklch(0.42 0.12 252 / 0.7);
+    border-left: 3px solid oklch(0.75 0.12 240);
+  }
+  .table-header-bg {
+    background-color: oklch(0.958 0.006 228);
+  }
+}
