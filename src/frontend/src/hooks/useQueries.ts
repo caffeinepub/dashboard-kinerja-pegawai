@@ -9,6 +9,9 @@ import {
 import { useActor } from "./useActor";
 import { useInternetIdentity } from "./useInternetIdentity";
 
+// Cache duration: 3 minutes — reduces repeated backend calls when switching pages
+const STALE_TIME = 3 * 60 * 1000;
+
 // ===== QUERY HOOKS =====
 
 export function useQueryStatus() {
@@ -21,6 +24,7 @@ export function useQueryStatus() {
       return actor.queryStatus();
     },
     enabled: !!actor && !isFetching && !!identity,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -33,6 +37,7 @@ export function useGetAllEmployeeProfiles() {
       return actor.getAllEmployeeProfiles();
     },
     enabled: !!actor && !isFetching,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -50,6 +55,7 @@ export function useGetCallerEmployeeProfile() {
       }
     },
     enabled: !!actor && !isFetching && !!identity,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -62,6 +68,7 @@ export function useGetAllPerformanceEntries() {
       return actor.getAllPerformanceEntries();
     },
     enabled: !!actor && !isFetching,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -79,6 +86,7 @@ export function useGetCallerPerformanceEntries() {
       }
     },
     enabled: !!actor && !isFetching && !!identity,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -91,6 +99,7 @@ export function useListApprovals() {
       return actor.listApprovals();
     },
     enabled: !!actor && !isFetching,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -103,6 +112,7 @@ export function useGetAllFeedback() {
       return actor.getAllFeedback();
     },
     enabled: !!actor && !isFetching,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -115,6 +125,7 @@ export function useGetAllEmployeesPerformanceSummary(period: string) {
       return actor.getAllEmployeesPerformanceSummary(period);
     },
     enabled: !!actor && !isFetching,
+    staleTime: STALE_TIME,
   });
 }
 
@@ -127,6 +138,7 @@ export function useGetFeedbackForEmployee(employeeId: Principal | null) {
       return actor.getFeedbackForEmployee(employeeId);
     },
     enabled: !!actor && !isFetching && !!employeeId,
+    staleTime: STALE_TIME,
   });
 }
 

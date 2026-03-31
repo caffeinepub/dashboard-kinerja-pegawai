@@ -17,7 +17,25 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     sourcemap: false,
-    minify: false,
+    minify: "esbuild",
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("@dfinity") || id.includes("@icp-sdk")) {
+            return "vendor-icp";
+          }
+          if (id.includes("motion")) {
+            return "vendor-motion";
+          }
+          if (
+            id.includes("node_modules/react") ||
+            id.includes("node_modules/react-dom")
+          ) {
+            return "vendor-react";
+          }
+        },
+      },
+    },
   },
   css: {
     postcss: "./postcss.config.js",

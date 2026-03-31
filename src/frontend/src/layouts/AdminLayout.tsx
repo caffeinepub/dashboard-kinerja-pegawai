@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
   ClipboardList,
@@ -13,15 +14,21 @@ import {
   X,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { ApprovalStatus } from "../backend";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useListApprovals } from "../hooks/useQueries";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import ApprovalManagement from "../pages/admin/ApprovalManagement";
-import FeedbackReview from "../pages/admin/FeedbackReview";
-import PenilaianKinerja from "../pages/admin/PenilaianKinerja";
-import SasaranKinerjaAdmin from "../pages/admin/SasaranKinerjaAdmin";
+
+// Lazy load all pages — only loaded when user navigates to them
+const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
+const ApprovalManagement = lazy(
+  () => import("../pages/admin/ApprovalManagement"),
+);
+const FeedbackReview = lazy(() => import("../pages/admin/FeedbackReview"));
+const PenilaianKinerja = lazy(() => import("../pages/admin/PenilaianKinerja"));
+const SasaranKinerjaAdmin = lazy(
+  () => import("../pages/admin/SasaranKinerjaAdmin"),
+);
 
 export type AdminPage =
   | "dashboard"
@@ -49,6 +56,20 @@ const navItems: NavItem[] = [
   { id: "penilaian", label: "Penilaian Kinerja", icon: Star },
   { id: "feedback", label: "Feedback & Review", icon: MessageSquare },
 ];
+
+function PageLoader() {
+  return (
+    <div className="p-6 space-y-4">
+      <Skeleton className="h-8 w-48" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {["sk1", "sk2", "sk3", "sk4"].map((sk) => (
+          <Skeleton key={sk} className="h-28 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-64 rounded-xl" />
+    </div>
+  );
+}
 
 export default function AdminLayout() {
   const [currentPage, setCurrentPage] = useState<AdminPage>("dashboard");
@@ -207,20 +228,22 @@ export default function AdminLayout() {
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">
-          <motion.div
-            key={currentPage}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {currentPage === "dashboard" && (
-              <AdminDashboard setCurrentPage={setCurrentPage} />
-            )}
-            {currentPage === "approvals" && <ApprovalManagement />}
-            {currentPage === "skp" && <SasaranKinerjaAdmin />}
-            {currentPage === "penilaian" && <PenilaianKinerja />}
-            {currentPage === "feedback" && <FeedbackReview />}
-          </motion.div>
+          <Suspense fallback={<PageLoader />}>
+            <motion.div
+              key={currentPage}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {currentPage === "dashboard" && (
+                <AdminDashboard setCurrentPage={setCurrentPage} />
+              )}
+              {currentPage === "approvals" && <ApprovalManagement />}
+              {currentPage === "skp" && <SasaranKinerjaAdmin />}
+              {currentPage === "penilaian" && <PenilaianKinerja />}
+              {currentPage === "feedback" && <FeedbackReview />}
+            </motion.div>
+          </Suspense>
         </main>
       </div>
     </div>

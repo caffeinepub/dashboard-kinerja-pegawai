@@ -1,0 +1,6 @@
+import{o as m}from"./index-DT8qAVT2.js";import{j as o}from"./vendor-react-zqcd9oDO.js";/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const u=[["path",{d:"M16 7h6v6",key:"box55l"}],["path",{d:"m22 7-8.5 8.5-5-5L2 17",key:"1t1m79"}]],j=m("trending-up",u);function k({percentage:h,size:t=120,strokeWidth:a=11,label:s,color:l="#1E88E5",trackColor:x="#E3E8EE"}){const c=(t-a*2)/2,e=t/2,n=t/2,i=2*Math.PI*c,r=Math.min(Math.max(h,0),100),d=i-r/100*i,f=s?`${s}: ${Math.round(r)}%`:`${Math.round(r)}%`;return o.jsxs("svg",{width:t,height:t,viewBox:`0 0 ${t} ${t}`,role:"img","aria-label":f,children:[o.jsx("title",{children:f}),o.jsx("circle",{cx:e,cy:n,r:c,fill:"none",stroke:x,strokeWidth:a}),o.jsx("circle",{cx:e,cy:n,r:c,fill:"none",stroke:l,strokeWidth:a,strokeLinecap:"round",strokeDasharray:i,strokeDashoffset:d,transform:`rotate(-90 ${e} ${n})`,style:{transition:"stroke-dashoffset 0.5s ease"}}),o.jsxs("text",{x:e,y:s?n-6:n+5,textAnchor:"middle",fontSize:t*.155,fontWeight:"700",fill:"#1F2A37",fontFamily:"Plus Jakarta Sans, system-ui, sans-serif",children:[Math.round(r),"%"]}),s&&o.jsx("text",{x:e,y:n+12,textAnchor:"middle",fontSize:t*.085,fill:"#6B7280",fontFamily:"Plus Jakarta Sans, system-ui, sans-serif",children:s})]})}export{k as D,j as T};

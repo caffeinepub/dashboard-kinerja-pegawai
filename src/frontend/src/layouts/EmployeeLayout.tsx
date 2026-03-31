@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -12,12 +13,16 @@ import {
   X,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useGetCallerEmployeeProfile } from "../hooks/useQueries";
-import CapaianSaya from "../pages/employee/CapaianSaya";
-import EmployeeDashboard from "../pages/employee/EmployeeDashboard";
-import ProfilSaya from "../pages/employee/ProfilSaya";
+
+// Lazy load all pages — only loaded when user navigates to them
+const CapaianSaya = lazy(() => import("../pages/employee/CapaianSaya"));
+const EmployeeDashboard = lazy(
+  () => import("../pages/employee/EmployeeDashboard"),
+);
+const ProfilSaya = lazy(() => import("../pages/employee/ProfilSaya"));
 
 export type EmployeePage = "dashboard" | "capaian" | "profil";
 
@@ -49,6 +54,20 @@ function isProfileComplete(
     profile.nama.trim() !== "" &&
     profile.nip.trim() !== "" &&
     profile.jabatan.trim() !== ""
+  );
+}
+
+function PageLoader() {
+  return (
+    <div className="p-6 space-y-4">
+      <Skeleton className="h-8 w-48" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {["sk1", "sk2", "sk3", "sk4"].map((sk) => (
+          <Skeleton key={sk} className="h-28 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-48 rounded-xl" />
+    </div>
   );
 }
 
@@ -248,18 +267,20 @@ export default function EmployeeLayout() {
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">
-          <motion.div
-            key={activePage}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {activePage === "dashboard" && profileComplete && (
-              <EmployeeDashboard setCurrentPage={setCurrentPage} />
-            )}
-            {activePage === "capaian" && profileComplete && <CapaianSaya />}
-            {(activePage === "profil" || profileIncomplete) && <ProfilSaya />}
-          </motion.div>
+          <Suspense fallback={<PageLoader />}>
+            <motion.div
+              key={activePage}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activePage === "dashboard" && profileComplete && (
+                <EmployeeDashboard setCurrentPage={setCurrentPage} />
+              )}
+              {activePage === "capaian" && profileComplete && <CapaianSaya />}
+              {(activePage === "profil" || profileIncomplete) && <ProfilSaya />}
+            </motion.div>
+          </Suspense>
         </main>
       </div>
     </div>
