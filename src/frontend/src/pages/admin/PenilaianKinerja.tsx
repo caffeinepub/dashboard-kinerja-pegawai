@@ -19,10 +19,11 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import type { Principal } from "@icp-sdk/core/principal";
-import { Loader2, Star, User } from "lucide-react";
+import { Info, Loader2, Star, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ApprovalStatus } from "../../backend";
+import EmployeeProfilesTable from "../../components/EmployeeProfilesTable";
 import {
   useGetAllEmployeesPerformanceSummary,
   useGetAllFeedback,
@@ -44,7 +45,9 @@ function StarPicker({
           key={star}
           type="button"
           onClick={() => onChange(star)}
-          className={`text-2xl transition-colors ${star <= value ? "text-warning" : "text-muted"} hover:text-warning`}
+          className={`text-2xl transition-colors ${
+            star <= value ? "text-warning" : "text-muted"
+          } hover:text-warning`}
         >
           {star <= value ? "★" : "☆"}
         </button>
@@ -112,6 +115,18 @@ export default function PenilaianKinerja() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Profil Referensi */}
+      <EmployeeProfilesTable compact />
+
+      {/* Info note */}
+      <div className="flex items-start gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg text-sm text-muted-foreground">
+        <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+        <span>
+          Gunakan tabel profil di atas sebagai referensi data pegawai. Tabel
+          penilaian di bawah menampilkan pegawai berdasarkan Principal ID.
+        </span>
+      </div>
+
       <div className="flex items-end gap-4">
         <div className="space-y-1">
           <Label htmlFor="period-penilaian">Periode</Label>

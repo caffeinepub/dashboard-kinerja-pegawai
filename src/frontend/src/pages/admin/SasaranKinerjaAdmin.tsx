@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { ClipboardList } from "lucide-react";
 import { useState } from "react";
+import EmployeeProfilesTable from "../../components/EmployeeProfilesTable";
 import {
   useGetAllEmployeesPerformanceSummary,
   useGetAllPerformanceEntries,
@@ -41,6 +42,9 @@ export default function SasaranKinerjaAdmin() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Profil Pegawai Section */}
+      <EmployeeProfilesTable />
+
       <div className="flex items-end gap-4">
         <div className="space-y-1">
           <Label htmlFor="period-input">Periode</Label>

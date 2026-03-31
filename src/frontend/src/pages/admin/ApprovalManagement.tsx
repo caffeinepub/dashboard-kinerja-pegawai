@@ -19,6 +19,7 @@ import {
 import { CheckCircle, Loader2, Users, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ApprovalStatus } from "../../backend";
+import EmployeeProfilesTable from "../../components/EmployeeProfilesTable";
 import {
   useListApprovals,
   useMutationSetApproval,
@@ -220,6 +221,9 @@ export default function ApprovalManagement() {
           )}
         </CardContent>
       </Card>
+
+      {/* Profil Pegawai Terdaftar */}
+      <EmployeeProfilesTable />
 
       <footer className="text-center text-xs text-muted-foreground py-2">
         © {new Date().getFullYear()}. Built with ❤️ using{" "}

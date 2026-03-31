@@ -454,6 +454,87 @@ export default function AdminDashboard({ setCurrentPage }: Props) {
         </Card>
       </div>
 
+      {/* Profil Pegawai Terdaftar */}
+      <Card className="shadow-card">
+        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Users className="w-4 h-4 text-primary" />
+            Profil Pegawai Terdaftar
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-primary h-7"
+            onClick={() => setCurrentPage("approvals")}
+            data-ocid="admin.profiles.link"
+          >
+            Kelola Persetujuan
+          </Button>
+        </CardHeader>
+        <CardContent className="p-0">
+          {profilesLoading ? (
+            <div className="p-6 space-y-3" data-ocid="profiles.loading_state">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
+          ) : (profiles ?? []).length === 0 ? (
+            <div className="text-center py-10" data-ocid="profiles.empty_state">
+              <Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">
+                Belum ada profil pegawai terdaftar
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table data-ocid="profiles.table">
+                <TableHeader>
+                  <TableRow className="table-header-bg">
+                    <TableHead className="w-10">No</TableHead>
+                    <TableHead>Nama</TableHead>
+                    <TableHead>NIP</TableHead>
+                    <TableHead>Jabatan</TableHead>
+                    <TableHead>Lokasi Kerja (Desa Binaan)</TableHead>
+                    <TableHead>Kecamatan</TableHead>
+                    <TableHead>Kabupaten</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(profiles ?? []).map((p, idx) => (
+                    <TableRow
+                      key={`${p.nip}-${idx}`}
+                      data-ocid={`profiles.item.${idx + 1}`}
+                    >
+                      <TableCell className="text-muted-foreground text-xs">
+                        {idx + 1}
+                      </TableCell>
+                      <TableCell className="font-medium text-sm">
+                        {p.nama || "—"}
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {p.nip || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {p.jabatan || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {p.lokasiKerja || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {p.kecamatan || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {p.kabupaten || "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       <footer className="text-center text-xs text-muted-foreground py-2">
         © {new Date().getFullYear()}. Built with ❤️ using{" "}
         <a

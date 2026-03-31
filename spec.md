@@ -1,40 +1,34 @@
-# Dashboard Kinerja Pegawai BKKBN
+# Dashboard Kinerja Pegawai
 
 ## Current State
-New project. No existing application code.
+- EmployeeLayout: pegawai langsung masuk dashboard setelah disetujui, tanpa cek kelengkapan profil
+- ApprovalManagement: hanya menampilkan Principal ID (shortPrincipal), tidak ada data profil pegawai (Nama, NIP, Jabatan, dll)
+- PenilaianKinerja: hanya menampilkan Principal ID, tidak ada nama/NIP pegawai
+- SasaranKinerjaAdmin: hanya menampilkan Principal ID di kolom pegawai
+- FeedbackReview: hanya menampilkan Principal ID
+- AdminDashboard: widget persetujuan & feedback hanya menampilkan Principal ID
 
 ## Requested Changes (Diff)
 
 ### Add
-- Employee registration form with profile fields: Nama, NIP, Jabatan, Lokasi Kerja (Desa Binaan), Kecamatan, Kabupaten
-- Admin approval system for new employee registrations
-- Performance entry system based on Perjanjian Kinerja form:
-  - Sasaran Kinerja (performance objective)
-  - Indikator Kinerja: NO, Uraian (description)
-  - Target: Jumlah (amount), Satuan (unit)
-  - Capaian: Jumlah (actual amount), Persentase (auto-calculated: Capaian Jumlah / Target Jumlah x 100)
-  - Sumber Data Evaluasi (evaluation data source)
-  - Bukti Dukung (supporting evidence URL, e.g. Google Drive link)
-- Admin panel to view all employees' performance data
-- Admin feedback and overall rating (1-5 stars) per employee per period
-- Employee dashboard showing their own performance summary and admin feedback
-- Role-based access: Admin vs Employee
+- Gate profil di EmployeeLayout: jika profil belum lengkap (nama/nip/jabatan kosong), tampilkan halaman paksa isi profil sebelum bisa akses menu lain. Tampilkan banner/alert yang jelas bahwa profil harus diisi terlebih dahulu. Format sesuai gambar: Nama, NIP, Jabatan, Lokasi Kerja (Desa Binaan), Kecamatan, Kabupaten.
+- Fungsi helper `buildProfileMap` di semua halaman admin untuk memetakan Principal.toString() → EmployeeProfile
 
 ### Modify
-- Nothing (new project)
+- **EmployeeLayout**: saat currentPage !== 'profil' dan profil belum lengkap, paksa tampilkan ProfilSaya dengan banner informasi wajib isi
+- **ApprovalManagement**: tambahkan kolom Nama, NIP, Jabatan, Lokasi Kerja, Kecamatan, Kabupaten (dari useGetAllEmployeeProfiles). Jika profil tidak ada, tampilkan "-". Ubah tampilan dari tabel minimalis ke tabel yang informatif.
+- **PenilaianKinerja**: tampilkan Nama + NIP + Jabatan untuk setiap pegawai yang disetujui, bukan hanya shortPrincipal
+- **SasaranKinerjaAdmin**: tampilkan Nama + NIP pegawai di kolom pegawai, bukan hanya shortPrincipal
+- **FeedbackReview**: tampilkan Nama + NIP pegawai di kolom pegawai, bukan hanya shortPrincipal
+- **AdminDashboard**: di widget pending approvals, tampilkan nama pegawai jika tersedia
 
 ### Remove
-- Nothing (new project)
+- Tidak ada penghapusan
 
 ## Implementation Plan
-1. Backend: Employee profile management (create, read, update)
-2. Backend: Performance entry CRUD (sasaran kinerja + indikator kinerja with auto-calculated percentage)
-3. Backend: Admin approval for user registrations
-4. Backend: Admin feedback and rating per employee
-5. Backend: Admin can view all employees and their performance
-6. Frontend: Auth-gated app with role-based routing (Admin vs Employee)
-7. Frontend: Employee registration/profile setup page
-8. Frontend: Employee performance entry table (matching Perjanjian Kinerja format)
-9. Frontend: Admin dashboard with employee list, approval queue, performance viewer
-10. Frontend: Admin feedback form with star rating
-11. Frontend: Employee dashboard showing performance summary and received feedback
+1. Update `EmployeeLayout.tsx`: tambahkan logika gate profil — jika `profile` sudah di-load tapi nama/nip/jabatan kosong, render ProfilSaya dengan alert banner "Lengkapi profil Anda terlebih dahulu" dan sembunyikan menu lain atau disable navigasi ke halaman lain
+2. Update `ApprovalManagement.tsx`: panggil `useGetAllEmployeeProfiles()`, buat map Principal→Profile, tampilkan data lengkap pegawai di tabel
+3. Update `PenilaianKinerja.tsx`: panggil `useGetAllEmployeeProfiles()`, buat map, tampilkan nama/NIP/jabatan
+4. Update `SasaranKinerjaAdmin.tsx`: panggil `useGetAllEmployeeProfiles()`, buat map, tampilkan nama/NIP
+5. Update `FeedbackReview.tsx`: panggil `useGetAllEmployeeProfiles()`, buat map, tampilkan nama/NIP
+6. Update `AdminDashboard.tsx`: gunakan profiles yang sudah diambil untuk tampilkan nama di widget approvals

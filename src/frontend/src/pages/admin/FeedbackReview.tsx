@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MessageSquare } from "lucide-react";
+import EmployeeProfilesTable from "../../components/EmployeeProfilesTable";
 import { useGetAllFeedback } from "../../hooks/useQueries";
 
 const shortPrincipal = (p: { toString(): string }) =>
@@ -34,10 +35,14 @@ export default function FeedbackReview() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Profil Pegawai Terdaftar - reference card */}
+      <EmployeeProfilesTable />
+
+      {/* Feedback table */}
       <Card className="shadow-card">
         <CardHeader>
           <CardTitle className="text-base">
-            Semua Feedback & Penilaian
+            Semua Feedback &amp; Penilaian
           </CardTitle>
           <CardDescription>
             Riwayat lengkap feedback yang telah diberikan kepada pegawai

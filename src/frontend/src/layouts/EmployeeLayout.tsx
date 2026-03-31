@@ -1,6 +1,8 @@
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
+  AlertTriangle,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -29,14 +31,49 @@ const navItems = [
   { id: "profil" as EmployeePage, label: "Profil Saya", icon: User },
 ];
 
+function isProfileComplete(
+  profile:
+    | {
+        nama: string;
+        nip: string;
+        jabatan: string;
+        lokasiKerja: string;
+        kecamatan: string;
+        kabupaten: string;
+      }
+    | null
+    | undefined,
+) {
+  if (!profile) return false;
+  return (
+    profile.nama.trim() !== "" &&
+    profile.nip.trim() !== "" &&
+    profile.jabatan.trim() !== ""
+  );
+}
+
 export default function EmployeeLayout() {
   const [currentPage, setCurrentPage] = useState<EmployeePage>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { clear } = useInternetIdentity();
-  const { data: profile } = useGetCallerEmployeeProfile();
+  const { data: profile, isLoading: profileLoading } =
+    useGetCallerEmployeeProfile();
+
+  const profileComplete = !profileLoading && isProfileComplete(profile);
+  const profileIncomplete = !profileLoading && !profileComplete;
+
+  // Force profil page if profile is incomplete
+  const activePage: EmployeePage =
+    profileIncomplete && currentPage !== "profil" ? "profil" : currentPage;
 
   const displayName = profile?.nama ?? "Pegawai";
   const closeSidebar = () => setSidebarOpen(false);
+
+  const handleNavClick = (pageId: EmployeePage) => {
+    if (profileIncomplete && pageId !== "profil") return;
+    setCurrentPage(pageId);
+    setSidebarOpen(false);
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -100,28 +137,46 @@ export default function EmployeeLayout() {
           </div>
         </div>
 
+        {/* Incomplete profile warning badge in sidebar */}
+        {profileIncomplete && (
+          <div className="px-3 pb-2">
+            <div className="flex items-center gap-2 px-3 py-2 bg-yellow-500/20 border border-yellow-400/30 rounded-lg">
+              <AlertTriangle className="w-3.5 h-3.5 text-yellow-300 shrink-0" />
+              <p className="text-yellow-200 text-xs leading-snug">
+                Profil belum lengkap
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Nav */}
         <nav className="flex-1 px-3 py-2 space-y-1" data-ocid="employee.link">
           {navItems.map((item) => {
-            const isActive = currentPage === item.id;
+            const isActive = activePage === item.id;
+            const isDisabled = profileIncomplete && item.id !== "profil";
             return (
               <button
                 key={item.id}
                 type="button"
                 data-ocid={`employee.${item.id}.tab`}
-                onClick={() => {
-                  setCurrentPage(item.id);
-                  setSidebarOpen(false);
-                }}
+                onClick={() => handleNavClick(item.id)}
+                disabled={isDisabled}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all text-left",
                   isActive
                     ? "bg-white/20 text-white font-semibold border-l-[3px] border-white/80 rounded-l-none"
-                    : "text-white/70 hover:bg-white/10 hover:text-white",
+                    : isDisabled
+                      ? "text-white/30 cursor-not-allowed"
+                      : "text-white/70 hover:bg-white/10 hover:text-white",
                 )}
               >
                 <item.icon className="w-4 h-4 shrink-0" />
                 <span>{item.label}</span>
+                {isDisabled && (
+                  <span className="ml-auto text-[9px] bg-yellow-400/20 text-yellow-300 px-1.5 py-0.5 rounded">
+                    Kunci
+                  </span>
+                )}
               </button>
             );
           })}
@@ -169,19 +224,41 @@ export default function EmployeeLayout() {
           </div>
         </header>
 
+        {/* Profile incomplete banner */}
+        {profileIncomplete && (
+          <div
+            className="px-6 pt-4"
+            data-ocid="employee.profile_incomplete.error_state"
+          >
+            <Alert className="border-yellow-400/50 bg-yellow-50 dark:bg-yellow-950/30">
+              <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+              <AlertDescription className="text-yellow-800 dark:text-yellow-200 text-sm">
+                <strong>
+                  Lengkapi data profil Anda terlebih dahulu sebelum menggunakan
+                  aplikasi.
+                </strong>{" "}
+                Isi semua field yang diperlukan (Nama, NIP, Jabatan, Lokasi
+                Kerja, Kecamatan, Kabupaten) lalu klik{" "}
+                <strong>Simpan Profil</strong>. Menu lain akan terbuka setelah
+                profil tersimpan.
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">
           <motion.div
-            key={currentPage}
+            key={activePage}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {currentPage === "dashboard" && (
+            {activePage === "dashboard" && profileComplete && (
               <EmployeeDashboard setCurrentPage={setCurrentPage} />
             )}
-            {currentPage === "capaian" && <CapaianSaya />}
-            {currentPage === "profil" && <ProfilSaya />}
+            {activePage === "capaian" && profileComplete && <CapaianSaya />}
+            {(activePage === "profil" || profileIncomplete) && <ProfilSaya />}
           </motion.div>
         </main>
       </div>
