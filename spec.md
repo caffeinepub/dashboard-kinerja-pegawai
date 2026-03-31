@@ -1,27 +1,25 @@
 # Dashboard Kinerja Pegawai
 
 ## Current State
-Aplikasi sudah punya lazy loading dan cache 3 menit. Bottleneck utama:
-1. vite.config.js: minify: false — bundle tidak diminifikasi, ukuran besar
-2. Tidak ada code splitting manual untuk library @dfinity/@icp-sdk
-3. QueryClient tanpa default staleTime
-4. useActor.ts refetchQueries setiap actor berubah (double-fetch)
+Halaman LoginPage.tsx memiliki satu tombol login dengan Internet Identity untuk semua pengguna (admin dan pegawai). Setelah login, App.tsx menentukan role (admin/employee) berdasarkan respons backend `queryStatus()`.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Manual chunk splitting di vite config
-- Default staleTime dan gcTime di QueryClient
+- Tab/toggle di halaman LoginPage: "Login Pegawai" dan "Login Admin"
+- Tab "Login Admin" memiliki tampilan dan pesan yang berbeda (lebih formal, warna berbeda, ikon berbeda)
+- Pesan/instruksi khusus di tab admin: hanya untuk akun yang sudah terdaftar sebagai admin
+- Kedua tab menggunakan fungsi `login` yang sama dari `useInternetIdentity` (Internet Identity)
 
 ### Modify
-- vite.config.js: minify false -> esbuild, tambah manualChunks
-- main.tsx: QueryClient dengan defaults (staleTime 3min, gcTime 10min, retry 1)
-- useActor.ts: useRef untuk skip invalidate jika sudah pernah dilakukan
+- `LoginPage.tsx`: Tambahkan dua tab dengan `Tabs` shadcn/ui, tab pertama "Login Pegawai" (konten existing), tab kedua "Login Admin" (konten baru dengan styling berbeda)
 
 ### Remove
-- Tidak ada
+- Tidak ada yang dihapus
 
 ## Implementation Plan
-1. vite.config.js: aktifkan minifikasi esbuild, manualChunks untuk vendor-icp, vendor-motion
-2. main.tsx: QueryClient default options
-3. useActor.ts: perbaiki double-fetch dengan useRef
+1. Update `LoginPage.tsx` dengan dua tab: `pegawai` dan `admin`
+2. Tab pegawai: konten seperti sekarang
+3. Tab admin: tampilan berbeda — judul "Portal Admin BKKBN", ikon `ShieldCheck`, warna yang lebih tegas (biru gelap/navy), pesan peringatan bahwa hanya akun admin yang bisa masuk, tombol "Masuk sebagai Admin"
+4. Gunakan shadcn `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`
+5. Kedua tab memanggil `login()` yang sama dari `useInternetIdentity`

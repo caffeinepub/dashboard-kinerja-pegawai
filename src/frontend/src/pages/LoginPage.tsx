@@ -1,5 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Award, BarChart3, Loader2, Shield, Users } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Award,
+  BarChart3,
+  Loader2,
+  Shield,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 
@@ -83,45 +91,119 @@ export default function LoginPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md"
+          className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md"
         >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-sidebar-gradient flex items-center justify-center mx-auto mb-4 shadow-card">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-foreground">
-              Selamat Datang
-            </h2>
-            <p className="text-muted-foreground text-sm mt-2">
-              Masuk ke sistem e-Performance BKKBN
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <Button
-              data-ocid="login.primary_button"
-              onClick={login}
-              disabled={isLoggingIn}
-              className="w-full h-12 text-base font-semibold"
-              size="lg"
+          {/* Tabs selector */}
+          <Tabs defaultValue="pegawai" className="w-full">
+            <TabsList
+              data-ocid="login.tab"
+              className="grid w-full grid-cols-2 mb-8"
             >
-              {isLoggingIn ? (
-                <Loader2 className="w-5 h-5 animate-spin mr-2" />
-              ) : (
-                <Shield className="w-5 h-5 mr-2" />
-              )}
-              {isLoggingIn
-                ? "Memproses Login..."
-                : "Login dengan Internet Identity"}
-            </Button>
-          </div>
+              <TabsTrigger
+                value="pegawai"
+                data-ocid="login.pegawai.tab"
+                className="text-sm font-medium"
+              >
+                <Shield className="w-4 h-4 mr-1.5" />
+                Pegawai
+              </TabsTrigger>
+              <TabsTrigger
+                value="admin"
+                data-ocid="login.admin.tab"
+                className="text-sm font-medium"
+              >
+                <ShieldCheck className="w-4 h-4 mr-1.5" />
+                Admin
+              </TabsTrigger>
+            </TabsList>
 
-          <div className="mt-8 p-4 bg-muted rounded-xl">
-            <p className="text-xs text-muted-foreground text-center leading-relaxed">
-              Login menggunakan Internet Identity yang aman. Data Anda
-              terlindungi dengan enkripsi blockchain ICP.
-            </p>
-          </div>
+            {/* Tab: Pegawai */}
+            <TabsContent value="pegawai">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-sidebar-gradient flex items-center justify-center mx-auto mb-4 shadow-card">
+                  <Shield className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Selamat Datang
+                </h2>
+                <p className="text-muted-foreground text-sm mt-2">
+                  Masuk ke sistem e-Performance BKKBN
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <Button
+                  data-ocid="login.primary_button"
+                  onClick={login}
+                  disabled={isLoggingIn}
+                  className="w-full h-12 text-base font-semibold"
+                  size="lg"
+                >
+                  {isLoggingIn ? (
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  ) : (
+                    <Shield className="w-5 h-5 mr-2" />
+                  )}
+                  {isLoggingIn
+                    ? "Memproses Login..."
+                    : "Login dengan Internet Identity"}
+                </Button>
+              </div>
+
+              <div className="mt-6 p-4 bg-muted rounded-xl">
+                <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                  Login menggunakan Internet Identity yang aman. Data Anda
+                  terlindungi dengan enkripsi blockchain ICP.
+                </p>
+              </div>
+            </TabsContent>
+
+            {/* Tab: Admin */}
+            <TabsContent value="admin">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center mx-auto mb-4 shadow-card">
+                  <ShieldCheck className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Portal Admin BKKBN
+                </h2>
+                <p className="text-muted-foreground text-sm mt-2">
+                  Akses khusus untuk administrator sistem
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <Button
+                  data-ocid="login.admin.primary_button"
+                  onClick={login}
+                  disabled={isLoggingIn}
+                  className="w-full h-12 text-base font-semibold bg-slate-800 hover:bg-slate-900 text-white border-0"
+                  size="lg"
+                >
+                  {isLoggingIn ? (
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  ) : (
+                    <ShieldCheck className="w-5 h-5 mr-2" />
+                  )}
+                  {isLoggingIn ? "Memproses Login..." : "Masuk sebagai Admin"}
+                </Button>
+              </div>
+
+              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <p className="text-xs text-amber-800 text-center leading-relaxed">
+                  ⚠️ Hanya akun yang telah terdaftar sebagai admin yang dapat
+                  mengakses portal ini.
+                </p>
+              </div>
+
+              <div className="mt-3 p-4 bg-muted rounded-xl">
+                <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                  Login menggunakan Internet Identity yang aman. Data Anda
+                  terlindungi dengan enkripsi blockchain ICP.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
             © {new Date().getFullYear()}. Built with ❤️ using{" "}
